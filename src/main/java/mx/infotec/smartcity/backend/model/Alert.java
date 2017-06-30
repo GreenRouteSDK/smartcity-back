@@ -3,7 +3,12 @@ package mx.infotec.smartcity.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import mx.infotec.smartcity.backend.utils.OrionMapper;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -25,6 +30,58 @@ public class Alert implements Serializable {
     private String description;
     private String refUser;
     private String refDevice;
+    private ArrayList location;
+    private String temperature;
+    private boolean found;
+    private HashMap address;
+
+    
+    public Alert (){
+        
+    }
+    
+    public Alert(Data data, String elemento, String valor){
+        /* Se inicializa la varialbe found en false */
+        setFound(false);
+        if(data.getType().equals("AirQualityObserved")){
+            this.description = OrionMapper.extractProperty(data, elemento);
+            /* Verificamos que el resultado de la propiedad consultada, sea diferente al código 102 */
+            
+            if(!this.description.split(" ")[0].equals("102")){
+                /* Indicamos que el elemento fue encontrado */
+                setFound(true);
+                this.type = "AirQualityObserved";
+                this.alertType = valor;
+                this.eventObserved = firstLetterCaps(elemento);
+                this.refUser = "refUser";
+                this.refDevice = "refDevice";
+                this.dateTime = OrionMapper.extractTimeProperty(data, "dateObserved");
+                this.location = OrionMapper.extractCoordinateProperty(data);
+                this.address = OrionMapper.extractMapProperty(data, "address");
+                this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress");
+            }
+        }else if(data.getType().equals("Alert")){
+            /* Indicamos que el elemento fue encontrado */
+            setFound(true);
+            this.type = data.getType();
+            this.alertType = OrionMapper.extractProperty(data, "alertType");
+            this.eventObserved = OrionMapper.extractProperty(data, "eventObserved");
+            this.refUser = OrionMapper.extractProperty(data, "refUser");
+            this.refDevice = OrionMapper.extractProperty(data, "refDevice");
+            this.description = OrionMapper.extractProperty(data, "description");
+            this.dateTime = OrionMapper.extractTimeProperty(data, "dateTime");
+            this.location = OrionMapper.extractCoordinateProperty(data);
+            this.locationDescription = OrionMapper.extractProperty(data, "locationDescription");
+        }
+    }
+    
+    public boolean getFound(){
+        return found;
+    }
+    
+    public void setFound(boolean found){
+        this.found = found;
+    }
 
     public String getId() {
         return id;
@@ -97,12 +154,13 @@ public class Alert implements Serializable {
     public void setEventObserved(String eventObserved) {
         this.eventObserved = eventObserved;
     }
-
-   
-
+    
+    /* Función que convierte a mayúsculas la primera letra de un String */
+    public final String firstLetterCaps ( String data ) {
+      String firstLetter = data.substring(0,1).toUpperCase();
+      String restLetters = data.substring(1);
+      return firstLetter + restLetters;
+    }
     
     
-    
-    
-
 }

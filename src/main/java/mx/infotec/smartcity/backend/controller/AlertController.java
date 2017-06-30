@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,9 +25,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import mx.infotec.smartcity.backend.model.Alert;
+import mx.infotec.smartcity.backend.model.Data;
+import mx.infotec.smartcity.backend.model.Notification;
 import mx.infotec.smartcity.backend.model.UserProfile;
 import mx.infotec.smartcity.backend.persistence.AlertRepository;
 import mx.infotec.smartcity.backend.persistence.UserProfileRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.util.UriComponentsBuilder;
+import mx.infotec.smartcity.backend.model.OrionAlert;
 
 /**
  *
@@ -221,4 +232,40 @@ public class AlertController {
                         date, c.getTime(), pageable);
         return res;
     }
+    
+        @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<Void> createNotification(@RequestBody OrionAlert orionAlert, UriComponentsBuilder ucBuilder) {
+        /* Se obtienen las entidades de la clave principal determinada por el campo DATA */
+        List<Data> datos = orionAlert.getData();
+       
+        Map <String, String> eventsObserved = new HashMap <>();
+        eventsObserved.put("precipitation", "WeatherConditions");
+        eventsObserved.put("relativeHumidity", "WeatherConditions");
+        eventsObserved.put("temperature", "WeatherConditions");
+        eventsObserved.put("windDirection", "WeatherConditions");
+        eventsObserved.put("windSpeed", "WeatherConditions");
+        eventsObserved.put("CO","Pollutions");
+        eventsObserved.put("NO","Pollutions");
+        eventsObserved.put("NOx","Pollutions");
+        eventsObserved.put("SO2","Pollutions");
+        eventsObserved.put("O3","Pollutions");
+        eventsObserved.put("PM10","Pollutions");
+        
+        for(Data data : datos){
+            if(data.getType().equals("AirQualityObserved")){
+                for(Map.Entry<String, String> entry : eventsObserved.entrySet() ){
+                    Alert alert = new Alert(data, entry.getKey(), entry.getValue());
+                    if(alert.getFound())
+                        alertRepository.save(alert);
+                }
+            }else if(data.getType().equals("Alert")){
+                alertRepository.save(new Alert(data, "", ""));
+            }
+        }
+        
+        
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    }
+        
 }
