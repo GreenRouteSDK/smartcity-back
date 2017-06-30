@@ -35,7 +35,7 @@
 						"Sunny",
 						"Cloud",
 						"Foggy",
-						"Temperature (low, high)",
+						"Temperature",
 						"Heat alert",
 						"Wind chill alert",
 						"Wind advisories",
@@ -44,7 +44,9 @@
 						"Dense fog",
 						"Tornado warning",
 						"Tornado watch",
-						"Severe storm warning"]
+						"Severe storm warning",
+						"RelativeHumidity"
+						]
 }
 {
 	"_id":"Pollutions",
@@ -54,7 +56,12 @@
 						"Level of emissions",
 						"Level of pollutants, such as O3",
 						"Pre-contingency alert",
-						"Contingency alert"]
+						"Contingency alert",
+						"CO",
+						"NO",
+						"SO2",
+						"O3",
+						"PM10"]
 }
 {
 	"_id":"Pollen",
