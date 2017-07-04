@@ -10,7 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import mx.infotec.smartcity.backend.utils.OrionMapper;
 import org.springframework.data.annotation.Id;
-
+import mx.infotec.smartcity.backend.utils.AlertCatalog;
+import org.springframework.beans.factory.annotation.Autowired;
 /**
  *
  * @author Adrian Molina
@@ -34,7 +35,7 @@ public class Alert implements Serializable {
     private String temperature;
     private boolean found;
     private HashMap address;
-
+    
     
     public Alert (){
         
@@ -46,10 +47,10 @@ public class Alert implements Serializable {
         if(data.getType().equals("AirQualityObserved")){
             this.description = OrionMapper.extractProperty(data, elemento);
             /* Verificamos que el resultado de la propiedad consultada, sea diferente al código 102 */
-            
+
             if(!this.description.split(" ")[0].equals("102")){
                 /* Indicamos que el elemento fue encontrado */
-                setFound(true);
+                setFound(true);               
                 this.type = "AirQualityObserved";
                 this.alertType = valor;
                 this.eventObserved = firstLetterCaps(elemento);
@@ -58,7 +59,12 @@ public class Alert implements Serializable {
                 this.dateTime = OrionMapper.extractTimeProperty(data, "dateObserved");
                 this.location = OrionMapper.extractCoordinateProperty(data);
                 this.address = OrionMapper.extractMapProperty(data, "address");
-                this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress");
+                this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress") + ", " + OrionMapper.extractFromMapProperty(address, "addressLocality");
+                
+                if(elemento.equals("temperature")){
+                    this.eventObserved = AlertCatalog.seteventObservedTemperature(description);
+                    this.description = AlertCatalog.setAlertTemperature(description);                    
+                } 
             }
         }else if(data.getType().equals("Alert")){
             /* Indicamos que el elemento fue encontrado */
