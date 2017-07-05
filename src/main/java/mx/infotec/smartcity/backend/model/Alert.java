@@ -64,7 +64,12 @@ public class Alert implements Serializable {
                 if(elemento.equals("temperature")){
                     this.eventObserved = AlertCatalog.seteventObservedTemperature(description);
                     this.description = AlertCatalog.setAlertTemperature(description);                    
-                } 
+                }else if(elemento.equals("relativeHumidity")){
+                    this.eventObserved = "Relative humidity";
+                    this.description = AlertCatalog.setAlertHumidity(description);
+                }else if(valor.equals("Pollutions")){
+                    this.description = AlertCatalog.AlertPollution(description, elemento);
+                }
             }
         }else if(data.getType().equals("Alert")){
             /* Indicamos que el elemento fue encontrado */

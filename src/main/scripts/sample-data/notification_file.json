@@ -36,7 +36,9 @@
 						"Cloud",
 						"Foggy",
 						"Temperature",
+						"Relative humidity",
 						"Heat alert",
+						"Cold alert",
 						"Wind chill alert",
 						"Wind advisories",
 						"Flood watch",
@@ -45,7 +47,6 @@
 						"Tornado warning",
 						"Tornado watch",
 						"Severe storm warning",
-						"RelativeHumidity"
 						]
 }
 {
@@ -58,7 +59,7 @@
 						"Pre-contingency alert",
 						"Contingency alert",
 						"CO",
-						"NO",
+						"NO2",
 						"SO2",
 						"O3",
 						"PM10"]

@@ -245,7 +245,7 @@ public class AlertController {
         eventsObserved.put("windDirection", "WeatherConditions");
         eventsObserved.put("windSpeed", "WeatherConditions");
         eventsObserved.put("CO","Pollutions");
-        eventsObserved.put("NO","Pollutions");
+        eventsObserved.put("NO2","Pollutions");
         eventsObserved.put("NOx","Pollutions");
         eventsObserved.put("SO2","Pollutions");
         eventsObserved.put("O3","Pollutions");
