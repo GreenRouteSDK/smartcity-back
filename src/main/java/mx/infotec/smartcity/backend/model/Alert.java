@@ -32,9 +32,9 @@ public class Alert implements Serializable {
     private String refUser;
     private String refDevice;
     private ArrayList location;
-    private String temperature;
     private boolean found;
     private HashMap address;
+    private String dataSource;
     
     
     public Alert (){
@@ -60,10 +60,16 @@ public class Alert implements Serializable {
                 this.location = OrionMapper.extractCoordinateProperty(data);
                 this.address = OrionMapper.extractMapProperty(data, "address");
                 this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress") + ", " + OrionMapper.extractFromMapProperty(address, "addressLocality");
-                
+                this.dataSource = OrionMapper.extractProperty(data, "dataSource");
+                                
                 if(elemento.equals("temperature")){
-                    this.eventObserved = AlertCatalog.seteventObservedTemperature(description);
-                    this.description = AlertCatalog.setAlertTemperature(description);                    
+                    if(Float.parseFloat(description)>=14&&Float.parseFloat(description)<=26){
+                        setFound(false);
+                    }else{
+                        this.eventObserved = AlertCatalog.seteventObservedTemperature(description);
+                        this.description = AlertCatalog.setAlertTemperature(description);                     
+                    }
+                   
                 }else if(elemento.equals("relativeHumidity")){
                     this.eventObserved = "Relative humidity";
                     this.description = AlertCatalog.setAlertHumidity(description);
@@ -83,6 +89,7 @@ public class Alert implements Serializable {
             this.dateTime = OrionMapper.extractTimeProperty(data, "dateTime");
             this.location = OrionMapper.extractCoordinateProperty(data);
             this.locationDescription = OrionMapper.extractProperty(data, "locationDescription");
+            this.dataSource = OrionMapper.extractProperty(data, "dataSource");
         }
     }
     
@@ -164,6 +171,22 @@ public class Alert implements Serializable {
 
     public void setEventObserved(String eventObserved) {
         this.eventObserved = eventObserved;
+    }
+    
+    public String getdataSource(){
+        return dataSource;
+    }
+    
+    public void setdataSource(String dataSource){
+        this.dataSource = dataSource;
+    }
+    
+    public ArrayList getLocation(){
+        return location;
+    }
+    
+    public void setLocation(ArrayList location){
+        this.location = location;
     }
     
     /* Función que convierte a mayúsculas la primera letra de un String */
