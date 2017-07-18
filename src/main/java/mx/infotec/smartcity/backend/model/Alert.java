@@ -73,8 +73,13 @@ public class Alert implements Serializable {
                 }else if(elemento.equals("relativeHumidity")){
                     this.eventObserved = "Relative humidity";
                     this.description = AlertCatalog.setAlertHumidity(description);
-                }else if(valor.equals("Pollutions")){
+                    
+                }else if(valor.equals("Pollution")){
+                    if(Float.parseFloat(description)<=100){
+                        setFound(false);
+                    }else{
                     this.description = AlertCatalog.AlertPollution(description, elemento);
+                    }
                 }
             }
         }else if(data.getType().equals("Alert")){

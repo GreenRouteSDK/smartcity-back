@@ -58,9 +58,9 @@
 						]
 }
 {
-	"_id":"Pollutions",
+	"_id":"Pollution",
     "_class" : "mx.infotec.smartcity.backend.model.Notification",
-	"name":"Pollutions",
+	"name":"Pollution",
 	"subnotifications":["Visible pollution (smog)",
 						"Level of emissions",
 						"Pre-contingency alert",

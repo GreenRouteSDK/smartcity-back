@@ -244,12 +244,12 @@ public class AlertController {
         eventsObserved.put("temperature", "WeatherConditions");
         eventsObserved.put("windDirection", "WeatherConditions");
         eventsObserved.put("windSpeed", "WeatherConditions");
-        eventsObserved.put("CO","Pollutions");
-        eventsObserved.put("NO2","Pollutions");
-        eventsObserved.put("NOx","Pollutions");
-        eventsObserved.put("SO2","Pollutions");
-        eventsObserved.put("O3","Pollutions");
-        eventsObserved.put("PM10","Pollutions");
+        eventsObserved.put("CO","Pollution");
+        eventsObserved.put("NO2","Pollution");
+        eventsObserved.put("NOx","Pollution");
+        eventsObserved.put("SO2","Pollution");
+        eventsObserved.put("O3","Pollution");
+        eventsObserved.put("PM10","Pollution");
         
         for(Data data : datos){
             if(data.getType().equals("AirQualityObserved")){
