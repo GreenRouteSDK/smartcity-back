@@ -69,19 +69,19 @@ public class AlertCatalog {
     public static String setAlertHumidity(String valor){
         Float humidity = Float.parseFloat(valor);
         String format = decimalformat.format(humidity);
-        if(humidity<=29){
+        if(humidity<=29.99){
             return("Relative humidity: "+ format + " %. <br> Advice: No discomfort.");
-        }else if(humidity>=30&&humidity<=39){
+        }else if(humidity>=30&&humidity<=39.99){
             return("Relative humidity: "+ format + " %. <br> Advice: Some discomfort.");
-        }else if(humidity>=40&&humidity<=45){
+        }else if(humidity>=40&&humidity<=45.99){
             return("Relative humidity: "+ format + " %. <br> Advice: Great discomfort: avoid exertion.");
-        }else if(humidity>=46&&humidity<=54){
+        }else if(humidity>=46&&humidity<=54.99){
             return("Relative humidity: "+ format + " %. <br> Advice: Dangerous.");
         }else if(humidity>54){
             return("Relative humidity: "+ format + " %. <br> Advice: Heat stroke imminent.");
         }
         
-        return ("Relative humidity: " + valor);
+        return ("Relative humidity: " + format);
     }
     
     public static String AlertPollution(String valor, String pollutant){

@@ -75,7 +75,7 @@ public class Alert implements Serializable {
                     this.description = AlertCatalog.setAlertHumidity(description);
                     
                 }else if(valor.equals("Pollution")){
-                    if(Float.parseFloat(description)<=100){
+                    if(Float.parseFloat(description)<50){
                         setFound(false);
                     }else{
                     this.description = AlertCatalog.AlertPollution(description, elemento);
