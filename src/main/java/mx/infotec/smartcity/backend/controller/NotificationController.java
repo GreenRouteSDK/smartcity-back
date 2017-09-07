@@ -1,7 +1,11 @@
 package mx.infotec.smartcity.backend.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,8 @@ import mx.infotec.smartcity.backend.model.UserProfile;
 import mx.infotec.smartcity.backend.persistence.AlertRepository;
 import mx.infotec.smartcity.backend.persistence.NotificationRepository;
 import mx.infotec.smartcity.backend.persistence.UserProfileRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 /**
  *
@@ -53,8 +59,20 @@ public class NotificationController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/notifications")
-    public ResponseEntity<?> getUserGroups(@PathVariable("id") String id) {
-
+    public ResponseEntity<?> getUserGroups(@PathVariable("id") String id) throws ParseException {
+        
+        // codigo para obtener los parametros de fechas y pageable
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+        Date date = sdfDate.parse(strDate);
+        Pageable pageableRequest = new PageRequest(0, 1);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        c.add(Calendar.SECOND, -1);
+        // termina codigo para obtener los parametros de fechas y pageable
+        
         UserProfile userProfile = userProfileRepository.findOne(id);
         String str = "";
         if (userProfile != null) {
@@ -67,7 +85,8 @@ public class NotificationController {
                         	if (userNotification.equals(notification.getId())) {
                             	
                                 if (!userNotifications.contains(notification)) {
-                                    notification.setCount(this.alertRepository.findByAlertType(notification.getId()).size());
+                                    notification.setCount(this.alertRepository.findByAlertTypeAndDateTimeBetweenOrderByDateTimeAsc(notification.getId(),date, c.getTime()).size());
+                                    //notification.setCount(this.alertRepository.findByAlertType(notification.getId()).size());
                                 	userNotifications.add(notification);
                                 }	
                             }
@@ -88,5 +107,5 @@ public class NotificationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("UserProfile not valid");
         }
     }
-
+  
 }
