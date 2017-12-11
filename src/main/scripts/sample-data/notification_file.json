@@ -96,3 +96,25 @@
 	"name":"Asthma attacks",
 	"subnotifications":["People with asthma attacks at specific point"]
 }
+{
+	"_id":"SOSAlerts",
+    "_class" : "mx.infotec.smartcity.backend.model.Notification",
+	"name":"SOS Alerts",
+	"subnotifications":["Albergues",
+						"Centro de acopio",
+						"Hospitales",
+						"Banco de sangre",
+						"Sismo",
+						"Derrumbe",
+						"Edificio colapsado",
+						"A punto de colapso",
+						"Hundimiento",
+						"Grieta mayor",
+						"Grieta menor",
+						"Transformador de luz caído",
+						"Postes de luz caídos",
+						"Incendio",
+						"Desabasto de agua",
+						"Sin luz",
+						"Fuga de gas"]
+}
