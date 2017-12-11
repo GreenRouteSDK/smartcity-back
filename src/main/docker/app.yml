@@ -1,0 +1,25 @@
+version: '2'
+services:
+    smart-sdk-app:
+        image: smart-sdk
+        depends_on: 
+            - smart-sdk-mongodb
+            - smart-sdk-keyrock
+        environment:
+            - SPRING_PROFILES_ACTIVE=production
+            - SPRING_DATA_MONGODB_URI=mongodb://smart-sdk-mongodb:27017
+            - SMART_SDK_ORION_URL=http://smart-sdk-orion:1026
+        ports:
+            - 8080:8080
+    smart-sdk-mongodb:
+        extends:
+            file: mongodb.yml
+            service: smart-sdk-mongodb
+    smart-sdk-orion:
+        extends:
+            file: orion.yml
+            service: smart-sdk-orion
+    smart-sdk-keyrock:
+        extends:
+            file: keyrock.yml
+            service: smart-sdk-keyrock

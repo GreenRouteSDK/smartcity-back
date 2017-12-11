@@ -159,6 +159,7 @@ spring:
     data:
         mongodb:
             database: smartcity
+            uri: mongodb://smart-sdk-mongodb:27017
     mail:
         active: true
         host: smtp.gmail.com
