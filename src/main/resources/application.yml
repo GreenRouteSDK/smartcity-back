@@ -11,7 +11,7 @@ spring:
         protocol: smtp
         from: smartcity.sdk@gmail.com
         username: smartcity.sdk@gmail.com
-        password: Infotec2017
+        password: 
         tls: true
         properties.mail.smtp:
             auth: true
@@ -114,7 +114,7 @@ spring:
         protocol: smtp
         from: smartcity.sdk@gmail.com
         username: smartcity.sdk@gmail.com
-        password: 
+        password:
         tls: true
         properties.mail.smtp:
             auth: true

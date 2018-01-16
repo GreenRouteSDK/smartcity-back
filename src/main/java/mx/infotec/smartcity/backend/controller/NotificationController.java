@@ -85,9 +85,9 @@ public class NotificationController {
                         	if (userNotification.equals(notification.getId())) {
                             	
                                 if (!userNotifications.contains(notification)) {
-                                    notification.setCount(this.alertRepository.findByAlertTypeAndDateTimeBetweenOrderByDateTimeAsc(notification.getId(),date, c.getTime()).size());
-                                    //notification.setCount(this.alertRepository.findByAlertType(notification.getId()).size());
-                                	userNotifications.add(notification);
+                                    //notification.setCount(this.alertRepository.findByAlertTypeAndDateTimeBetweenOrderByDateTimeAsc(notification.getId(),date, c.getTime()).size());
+                                    notification.setCount(this.alertRepository.findByAlertType(notification.getId()).size());
+                                    userNotifications.add(notification);
                                 }	
                             }
                         }
