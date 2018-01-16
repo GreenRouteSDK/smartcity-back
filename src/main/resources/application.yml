@@ -5,13 +5,13 @@ spring:
         mongodb:
             database: smartcity
     mail:
-        active: false
+        active: true
         host: smtp.gmail.com
         port: 587
         protocol: smtp
-        from: test.smartcity.sdk@gmail.com
-        username: test.smartcity.sdk@gmail.com
-        password:
+        from: smartcity.sdk@gmail.com
+        username: smartcity.sdk@gmail.com
+        password: Infotec2017
         tls: true
         properties.mail.smtp:
             auth: true
@@ -61,8 +61,8 @@ spring:
         host: smtp.gmail.com
         port: 587
         protocol: smtp
-        from: test.smartcity.sdk@gmail.com
-        username: test.smartcity.sdk@gmail.com
+        from: smartcity.sdk@gmail.com
+        username: smartcity.sdk@gmail.com
         password:
         tls: true
         properties.mail.smtp:
@@ -112,8 +112,8 @@ spring:
         host: smtp.gmail.com
         port: 587
         protocol: smtp
-        from: test.smartcity.sdk@gmail.com
-        username: test.smartcity.sdk@gmail.com
+        from: smartcity.sdk@gmail.com
+        username: smartcity.sdk@gmail.com
         password: 
         tls: true
         properties.mail.smtp:
@@ -165,8 +165,8 @@ spring:
         host: smtp.gmail.com
         port: 587
         protocol: smtp
-        from: test.smartcity.sdk@gmail.com
-        username: test.smartcity.sdk@gmail.com
+        from: smartcity.sdk@gmail.com
+        username: smartcity.sdk@gmail.com
         password: 
         tls: true
         properties.mail.smtp:

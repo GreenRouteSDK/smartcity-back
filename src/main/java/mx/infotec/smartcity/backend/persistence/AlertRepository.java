@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import mx.infotec.smartcity.backend.model.Alert;
-import mx.infotec.smartcity.backend.model.Notification;
 
 /**
  *
