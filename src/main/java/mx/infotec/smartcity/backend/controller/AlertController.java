@@ -239,17 +239,22 @@ public class AlertController {
         List<Data> datos = orionAlert.getData();
        
         Map <String, String> eventsObserved = new HashMap <>();
-        eventsObserved.put("precipitation", "WeatherConditions");
-        eventsObserved.put("relativeHumidity", "WeatherConditions");
-        eventsObserved.put("temperature", "WeatherConditions");
-        eventsObserved.put("windDirection", "WeatherConditions");
-        eventsObserved.put("windSpeed", "WeatherConditions");
-        eventsObserved.put("CO","Pollution");
-        eventsObserved.put("NO2","Pollution");
-        eventsObserved.put("NOx","Pollution");
-        eventsObserved.put("SO2","Pollution");
-        eventsObserved.put("O3","Pollution");
-        eventsObserved.put("PM10","Pollution");
+        eventsObserved.put("precipitation", "Weather");
+        eventsObserved.put("relativeHumidity", "Weather");
+        eventsObserved.put("temperature", "Weather");
+        eventsObserved.put("windDirection", "Weather");
+        eventsObserved.put("windSpeed", "Weather");
+        eventsObserved.put("altitude", "Weather");
+        eventsObserved.put("barometricPressure", "Weather");
+        eventsObserved.put("luminosity", "Weather");
+        eventsObserved.put("CO","Environment");
+        eventsObserved.put("NO2","Environment");
+        eventsObserved.put("NOx","Environment");
+        eventsObserved.put("SO2","Environment");
+        eventsObserved.put("O3","Environment");
+        eventsObserved.put("PM10","Environment");
+        eventsObserved.put("TVOC","Environment");
+        eventsObserved.put("CO2","Environment");
         
         for(Data data : datos){
             if(data.getType().equals("AirQualityObserved")){

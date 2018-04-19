@@ -11,6 +11,7 @@ import java.util.List;
 import mx.infotec.smartcity.backend.utils.OrionMapper;
 import org.springframework.data.annotation.Id;
 import mx.infotec.smartcity.backend.utils.AlertCatalog;
+import static mx.infotec.smartcity.backend.utils.AlertCatalog.setSubCategoryAlert;
 import org.springframework.beans.factory.annotation.Autowired;
 /**
  *
@@ -35,7 +36,7 @@ public class Alert implements Serializable {
     private boolean found;
     private HashMap address;
     private String dataSource;
-    
+        
     
     public Alert (){
         
@@ -74,7 +75,7 @@ public class Alert implements Serializable {
                     this.eventObserved = "Relative humidity";
                     this.description = AlertCatalog.setAlertHumidity(description);
                     
-                }else if(valor.equals("Pollution")){
+                }else if(valor.equals("Environment")){
                     if(Float.parseFloat(description)<=100){
                         setFound(false);
                     }else{
@@ -86,15 +87,16 @@ public class Alert implements Serializable {
             /* Indicamos que el elemento fue encontrado */
             setFound(true);
             this.type = data.getType();
-            this.alertType = OrionMapper.extractProperty(data, "alertType");
-            this.eventObserved = OrionMapper.extractProperty(data, "eventObserved");
+            this.alertType = OrionMapper.extractProperty(data, "category");
+            this.eventObserved = firstLetterCaps(setSubCategoryAlert(OrionMapper.extractProperty(data, "subCategory")));
             this.refUser = OrionMapper.extractProperty(data, "refUser");
             this.refDevice = OrionMapper.extractProperty(data, "refDevice");
             this.description = OrionMapper.extractProperty(data, "description");
-            this.dateTime = OrionMapper.extractTimeProperty(data, "dateTime");
+            this.dateTime = OrionMapper.extractTimeProperty(data, "dateObserved");
             this.location = OrionMapper.extractCoordinateProperty(data);
-            this.locationDescription = OrionMapper.extractProperty(data, "locationDescription");
-            this.dataSource = OrionMapper.extractProperty(data, "dataSource");
+            this.address = OrionMapper.extractMapProperty(data, "address");
+            this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress") + ", " + OrionMapper.extractFromMapProperty(address, "addressLocality");
+            this.dataSource = OrionMapper.extractProperty(data, "alertSource");
         }
     }
     

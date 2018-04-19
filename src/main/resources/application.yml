@@ -139,8 +139,8 @@ idm:
     default:
         domain: default
 front:
-    url: http://207.249.127.180/#
-    image-url: http://207.249.127.180
+    url: http://207.249.127.124/#
+    image-url: http://207.249.127.124
 
 sa:
   account: admin@localhost.mx

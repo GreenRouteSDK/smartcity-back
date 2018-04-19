@@ -156,6 +156,75 @@ public class AlertCatalog {
         
         return valor;
     }
+    
+    public static String setSubCategoryAlert (String eventObserved){
+        switch (eventObserved) {
+            case "trafficJam":
+                eventObserved="Traffic jam";
+                break;
+            case "carAccident":
+                eventObserved="Car accident";
+                break;
+            case "carWrongDirecion":
+                eventObserved="Car wrong direction";
+                break;
+            case "carStopped":
+                eventObserved="Car stopped";
+                break;
+            case "roadClosed":
+                eventObserved="Road closed";
+                break;
+            case "roadWorks":
+                eventObserved="Road works";
+                break;
+            case "hazardOnRoad":
+                eventObserved="Hazard on road";
+                break;
+            case "injuredBiker":
+                eventObserved="Injured biker";
+                break;
+            case "highTemperature":
+                eventObserved="High temperature";
+                break;
+            case "lowTemperature":
+                eventObserved="Low temperature";
+                break;
+            case "heatWave":
+                eventObserved="Heat wave";
+                break;
+            case "tropicalCyclone":
+                eventObserved="Tropical cyclone";
+                break;
+            case "airPollution":
+                eventObserved="Air pollution";
+                break;
+            case "waterPollution":
+                eventObserved="Water pollution";
+                break;
+            case "pollenConcentration":
+                eventObserved="Pollen concentration";
+                break;
+            case "asthmaAttack":
+                eventObserved="Asthma attack";
+                break;
+            case "bumpedPatient":
+                eventObserved="Bumped patient";
+                break;
+            case "fallenPatient":
+                eventObserved="Fallen patient";
+                break;
+            case "heartAttack":
+                eventObserved="Heart attack";
+                break;
+            case "suspiciousAction":
+                eventObserved="Suspicious action";
+                break;
+            default:
+                break;
+        }
+        
+        return eventObserved;
+    }
         
     /*public static void main(String [] args){
             DecimalFormat decimalformat = new DecimalFormat("##.##");
