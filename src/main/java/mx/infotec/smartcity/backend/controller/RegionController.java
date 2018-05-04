@@ -22,6 +22,12 @@ public class RegionController {
     @Autowired
     private RegionRepository regionRepository;
     
+    /**
+     * Returns a list of regions
+     * 
+     * @param countryId
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<Region> getAll(@RequestParam(value = "countryId", required = false) Integer countryId) {
         List<Region> res;
@@ -39,6 +45,12 @@ public class RegionController {
         }
     }
 
+    /**
+     * Returns a region for a given id
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public Region getById(@PathVariable int id) {
         return regionRepository.findOne(id);

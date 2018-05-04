@@ -19,7 +19,13 @@ public class AgencyController {
 
     @Autowired
     private AgencyRepository agencyRepository;
-
+    
+    /**
+     * Returns a list of Agencies based on its name. Returns all if no parameter is sent
+     * 
+     * @param name
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<Agency> getAll(@RequestParam(value = "name", required = false) String name) {
         if (name != null) {

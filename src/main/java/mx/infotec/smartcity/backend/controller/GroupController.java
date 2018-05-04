@@ -45,18 +45,36 @@ public class GroupController {
     private UserProfileRepository userProfileRepository;
 
     private int SIZE = 5;
-
+    
+    /**
+     * Returns a list of all groups created
+     * 
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<Group> getByAll() {
         return groupRepository.findAll();
     }
-
+    
+    /**
+     * Returns a group for a given id
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public Group getById(@PathVariable("id") Integer id) {
         Group grupo = groupRepository.findOne(id);
         return grupo;
     }
 
+    /**
+     * Returns a list of paginated groups
+     * 
+     * @param page
+     * @param size
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/page/{page}/{size}")
     public Page<Group> getByPageSize(@PathVariable("page") String page, @PathVariable("size") String size) {
         Pageable pageable = new PageRequest(Integer.parseInt(page), Integer.parseInt(size));
@@ -64,12 +82,24 @@ public class GroupController {
         return groupRepository.findAll(pageable);
     }
 
+    /**
+     * Returns a list of paginated groups using a default page size(5)
+     * 
+     * @param page
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/page/{page}")
     public Page<Group> getByPage(@PathVariable("page") int page) {
         Pageable pageable = new PageRequest(page, SIZE);
         return groupRepository.findAll(pageable);
     }
 
+    /**
+     * Deletes a group specified by its id 
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<?> deleteByID(@PathVariable Integer id) {
         try {
@@ -90,6 +120,12 @@ public class GroupController {
         }
     }
 
+    /**
+     * Creates a new group with a list of alert types 
+     * 
+     * @param group
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> add(@Valid @RequestBody Group group) {
         if (group.getId() != null) {
@@ -123,6 +159,13 @@ public class GroupController {
         }
     }
 
+    /**
+     * Updates the specified group
+     * 
+     * @param group
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, value = "/{id}")
     public ResponseEntity<?> update(@RequestBody Group group, @PathVariable("id") Integer id) {
         try {

@@ -21,6 +21,11 @@ public class CountryController {
     @Autowired
     private CountryRepository countryRepository;
     
+    /**
+     * Returns a list of countries 
+     * 
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)    
     public List<Country> getAll() {
         List<Country> res = countryRepository.findAll();
@@ -32,6 +37,12 @@ public class CountryController {
         }
     }
     
+    /**
+     * Returns a country for a given id
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public Country getById(@PathVariable int id) {
         return countryRepository.findOne(id);

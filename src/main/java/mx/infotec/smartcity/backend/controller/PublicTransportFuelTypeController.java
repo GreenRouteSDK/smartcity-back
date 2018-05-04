@@ -26,6 +26,11 @@ public class PublicTransportFuelTypeController {
         this.defaultSort = new Sort(new Sort.Order("name"));
     }
     
+    /**
+     * Returns a list of public transport fuel types
+     * 
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<PublicTransportFuelType> getAll() {
         return publicTransportFuelTypeRepository.findAll(defaultSort);

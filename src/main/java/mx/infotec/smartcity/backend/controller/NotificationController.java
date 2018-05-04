@@ -42,6 +42,11 @@ public class NotificationController {
     @Autowired
     private AlertRepository alertRepository;
 
+    /**
+     * Returns the list of notifications and its subnotifications
+     * 
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<Notification> getAll() {
         List<Notification> res = notificationRepository.findAll();
@@ -53,11 +58,24 @@ public class NotificationController {
         }
     }
 
+    /**
+     * Returns a notification and its subnotifications for a given id
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public Notification getById(@PathVariable int id) {
-        return notificationRepository.findOne(id);
+    public Notification getById(@PathVariable("id") String id) {
+        return notificationRepository.findById(id);
     }
 
+    /**
+     * Returns the notifications of a given user
+     * 
+     * @param id
+     * @return
+     * @throws ParseException
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/notifications")
     public ResponseEntity<?> getUserGroups(@PathVariable("id") String id) throws ParseException {
         

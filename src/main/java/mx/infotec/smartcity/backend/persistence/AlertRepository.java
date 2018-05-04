@@ -55,6 +55,8 @@ public interface AlertRepository extends MongoRepository<Alert, Integer> {
 
     public Page<Alert> findByRefUserAndAlertTypeAndEventObservedAndDateTimeBetweenOrderByDateTimeDesc(String id,
             String alertType, String subalertType, Date start, Date end, Pageable pageable);
+    
+    public Alert findById(String id);
 
 	
 }

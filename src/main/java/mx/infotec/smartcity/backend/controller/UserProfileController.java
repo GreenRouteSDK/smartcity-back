@@ -73,6 +73,7 @@ public class UserProfileController {
     @Value("${idm.admin.username}")
     private String idmUser;
 
+    //TODO NO USE
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getByEmail(@RequestParam("email") String email) {
         UserProfile userProfile = userProfileRepository.findByEmail(email);
@@ -84,11 +85,24 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Gets user profile for a given id
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public UserProfile getById(@PathVariable String id) {
         return userProfileRepository.findOne(id);
     }
 
+    /**
+     * Deletes a user profile and sends notification email
+     * 
+     * @param id
+     * @param request
+     * @return
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<?> deleteByID(@PathVariable String id, HttpServletRequest request) {
         IdentityUser identityUser = (IdentityUser) request.getAttribute(Constants.USER_REQUES_KEY);
@@ -140,6 +154,12 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Creates a new user profile
+     * 
+     * @param userProfile
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> add(@RequestBody UserProfile userProfile) {
         if (userProfile.getId() != null) {
@@ -154,6 +174,13 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Updates a given user profile
+     * 
+     * @param userProfile
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
     public ResponseEntity<?> update(@RequestBody UserProfile userProfile, @PathVariable("id") String id) {
         if (isValid(userProfile)) {
@@ -184,6 +211,12 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Gets health profile from given user
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/health-profile")
     public ResponseEntity<?> getHeathProfile(@PathVariable("id") String id) {
 
@@ -202,10 +235,22 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Adds a health profile to a specified user
+     * 
+     * @param healthProfile
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/health-profile")
     public ResponseEntity<?> addHeathProfile(@RequestBody HealthProfile healthProfile, @PathVariable("id") String id) {
-        // TODO: Agregar validaciones y bloques de try/catch
-        UserProfile userProfile = userProfileRepository.findOne(id);
+    	
+    	UserProfile userProfile = null;
+        try {
+        	userProfile = userProfileRepository.findOne(id);
+		} catch (Exception e) {
+			LOGGER.error("Error al retrieve userProfile", e);
+		}
 
         if (userProfile != null) {
 
@@ -219,11 +264,23 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Updates the health profile of a given user
+     * 
+     * @param healthProfile
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/health-profile")
     public ResponseEntity<?> updateHeathProfile(@RequestBody HealthProfile healthProfile,
             @PathVariable("id") String id) {
-        // TODO: Agregar validaciones y bloques de try/catch
-        UserProfile userProfile = userProfileRepository.findOne(id);
+    	
+    	UserProfile userProfile =null;
+    	try {
+    		userProfile = userProfileRepository.findOne(id);
+    	} catch(Exception e) {
+        	LOGGER.error("Error al retrieve userProfile", e);
+        }
 
         if (userProfile != null) {
             userProfile.setHealthProfile(healthProfile);
@@ -234,10 +291,21 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Deletes the health profile of a given user
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/health-profile")
     public ResponseEntity<?> deleteHeathProfile(@PathVariable("id") String id) {
-        // TODO: Agregar validaciones y bloques de try/catch
-        UserProfile userProfile = userProfileRepository.findOne(id);
+    	
+    	UserProfile userProfile =null;
+    	try {
+        	userProfile = userProfileRepository.findOne(id);
+		} catch (Exception e) {
+			LOGGER.error("Error al retrieve userProfile", e);
+		}
 
         if (userProfile != null) {
             userProfile.setHealthProfile(null);
@@ -248,6 +316,12 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Returns list of addresses for a given user
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/address")
     public ResponseEntity<?> getAddress(@PathVariable("id") String id) {
         UserProfile userProfile = null;
@@ -267,6 +341,13 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Returns an address from a given user specified by its index
+     * 
+     * @param id
+     * @param index
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/address/{index}")
     public ResponseEntity<?> getAddress(@PathVariable("id") String id, @PathVariable("index") int index) {
         UserProfile userProfile = null;
@@ -286,6 +367,13 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Adds a new address to a specified user
+     * 
+     * @param address
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/address")
     public ResponseEntity<?> addAddress(@RequestBody Address address, @PathVariable("id") String id) {
         if (isValid(address)) {
@@ -314,6 +402,14 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Updates an address of a given user specified by its index
+     * 
+     * @param address
+     * @param id
+     * @param index
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}/address/{index}")
     public ResponseEntity<?> updateAddress(@RequestBody Address address, @PathVariable("id") String id,
             @PathVariable("index") int index) {
@@ -341,10 +437,22 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Deletes an address of a given user specified by its index
+     * 
+     * @param id
+     * @param index
+     * @return
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/address/{index}")
     public ResponseEntity<?> deleteAddress(@PathVariable("id") String id, @PathVariable("index") int index) {
-        // TODO: Agregar validaciones y bloques de try/catch
-        UserProfile userProfile = userProfileRepository.findOne(id);
+    	
+    	UserProfile userProfile = null;
+    	try {
+        	userProfile = userProfileRepository.findOne(id);
+		} catch (Exception e) {
+			LOGGER.error("Error al retrieve userProfile", e);
+		}
 
         if (userProfile != null && userProfile.getAddresses() != null && userProfile.getAddresses().size() > index) {
             userProfile.getAddresses().remove(index);
@@ -355,6 +463,12 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Returns list of vehicles for a given user
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/vehicle")
     public ResponseEntity<?> getVehicle(@PathVariable("id") String id) {
         UserProfile userProfile = null;
@@ -374,6 +488,13 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Returns a vehicle from a given user specified by its index
+     * 
+     * @param id
+     * @param index
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/vehicle/{index}")
     public ResponseEntity<?> getVehicle(@PathVariable("id") String id, @PathVariable("index") int index) {
         UserProfile userProfile = null;
@@ -393,6 +514,13 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Adds a new vehicle to a specified user
+     * 
+     * @param vehicle
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/vehicle")
     public ResponseEntity<?> addVehicle(@RequestBody Vehicle vehicle, @PathVariable("id") String id) {
         if (isValid(vehicle)) {
@@ -425,7 +553,15 @@ public class UserProfileController {
         }
     }
     
-        @RequestMapping(method = RequestMethod.PUT, value = "/{id}/vehicle/{index}")
+    /**
+     * Updates a vehicle of a given user specified by its index
+     * 
+     * @param vehicle
+     * @param id
+     * @param index
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}/vehicle/{index}")
     public ResponseEntity<?> updateVehicle(@RequestBody Vehicle vehicle, @PathVariable("id") String id,
             @PathVariable("index") int index) {
         if (isValid(vehicle)) {
@@ -452,10 +588,22 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Deletes a vehicle of a given user specified by its index
+     * 
+     * @param id
+     * @param index
+     * @return
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/vehicle/{index}")
     public ResponseEntity<?> deleteVehicle(@PathVariable("id") String id, @PathVariable("index") int index) {
-        // TODO: Agregar validaciones y bloques de try/catch
-        UserProfile userProfile = userProfileRepository.findOne(id);
+        
+        UserProfile userProfile = null;
+    	try {
+    		userProfile = userProfileRepository.findOne(id);
+		} catch (Exception e) {
+			LOGGER.error("Error al retrieve userProfile", e);
+		}
 
         if (userProfile != null && userProfile.getVehicles() != null && userProfile.getVehicles().size() > index) {
             userProfile.getVehicles().remove(index);
@@ -466,8 +614,12 @@ public class UserProfileController {
         }
     }
     
-    
-
+    /**
+     * Gets the groups and indicates whether the user is subscribed or not
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/groups")
     public ResponseEntity<?> getGroups(@PathVariable("id") String id) {
 
@@ -520,6 +672,13 @@ public class UserProfileController {
         return new ArrayList<SubscribedGroup>();
     }
 
+    /**
+     * Updates the groups subscriptions
+     * 
+     * @param subscribedGroups
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PATCH, value = "/{id}/groups")
     public ResponseEntity<?> changeGroups(@RequestBody List<SubscribedGroup> subscribedGroups,
             @PathVariable("id") String id) {
@@ -589,6 +748,13 @@ public class UserProfileController {
         return group;
     }
 
+    /**
+     * Adds a group to a user profile
+     * 
+     * @param groups
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/groups")
     public ResponseEntity<?> addGroups(@RequestBody List<Group> groups, @PathVariable("id") String id) {
 
@@ -610,6 +776,14 @@ public class UserProfileController {
         }
     }
 
+    /**
+     * Updates user profile and keystone account
+     * 
+     * @param userProfile
+     * @param id
+     * @param request
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PATCH, value = "/{id}")
     public ResponseEntity<?> updateEmail(@RequestBody UserProfile userProfile, @PathVariable("id") String id,
             HttpServletRequest request) {

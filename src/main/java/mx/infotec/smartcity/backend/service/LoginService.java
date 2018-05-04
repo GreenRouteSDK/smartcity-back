@@ -26,10 +26,28 @@ public interface LoginService extends Serializable {
   
   IdentityUser findUserByValidToken(String token) throws InvalidTokenException, ServiceException;
 
+  /**
+   * Performs a token authentication and refresh the Token Info object within the IdentityUser object
+   * @param token
+   * @return
+   * @throws InvalidTokenException
+   */
   TokenInfo refreshToken(String token) throws InvalidTokenException;
 
+  /**
+   * Verifies if the token is valid
+   * 
+   * @param token
+   * @return
+   */
   boolean isValidToken(String token);
 
+  /**
+   * Revoke current token from session (logout)
+   * 
+   * @param token
+   * @return
+   */
   boolean invalidToken(String token);
 
 }

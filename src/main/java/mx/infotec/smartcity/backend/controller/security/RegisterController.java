@@ -46,6 +46,13 @@ public class RegisterController {
   private String              idmUser;
   
   
+  /**
+   * Creates a new user on Keyrock and assigns a "user role" 
+   * It generates a validation token sent to the new user's email to confirm the new account
+   * 
+   * @param tokenRequest (username and password payload)
+   * @return
+   */
   @RequestMapping(value = "/register", method = RequestMethod.POST,
       consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<?> userRegistration(@RequestBody TokenRequest request) {
@@ -67,6 +74,13 @@ public class RegisterController {
     }
   }
 
+  /**
+   * Validates the user creation with the token sent by email
+   * It enables the user on keyrock
+   * 
+   * @param token
+   * @return
+   */
   @RequestMapping(value = "/register/validation/{token}", method = RequestMethod.GET)
   public ResponseEntity<?> validateRegistration(@PathVariable("token") String token) {
     try {
@@ -93,6 +107,14 @@ public class RegisterController {
     }
   }
   
+  /**
+   * Changes the current password
+   * 
+   * @param token
+   * @param user
+   * @param request (password, original_password)
+   * @return
+   */
     @RequestMapping(value = "/register/update-password", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> updatePassword(@RequestHeader(name = Constants.AUTH_TOKEN_HEADER) String token,

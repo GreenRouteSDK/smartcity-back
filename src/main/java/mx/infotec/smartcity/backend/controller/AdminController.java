@@ -20,6 +20,10 @@ import mx.infotec.smartcity.backend.service.UserService;
 import mx.infotec.smartcity.backend.service.exception.ServiceException;
 import mx.infotec.smartcity.backend.utils.Constants;
 
+/**
+ * Performs administrative tasks (users's operations)
+ *
+ */
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -28,6 +32,13 @@ public class AdminController {
     private UserService keystoneUserService;
 
 
+    /**
+     * Creates a user and stores its user profile
+     * 
+     * @param model
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/user/register", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> userRegistration(@RequestBody UserModel model, HttpServletRequest request) {
@@ -49,6 +60,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * Deletes user and removes its profile
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/user/delete", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> deleteUser(@RequestBody UserModel model) {
@@ -66,6 +83,11 @@ public class AdminController {
         }
     }
 
+    /**
+     * Returns the list of UserProfiles registered with its roles
+     * 
+     * @return
+     */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public ResponseEntity<?> userList() {
         try {
@@ -80,6 +102,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * Search users based on UserProfile parameters
+     * 
+     * @param model
+     * @return
+     */
     @RequestMapping(value = "/user/filter", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> userTry(@RequestBody UserModel model) {

@@ -64,17 +64,37 @@ public class PublicTransportController {
   private int                              SIZE      = 5;
   private String                           PROFILEID = "ProfileId";
 
+  /**
+   * Returns a list of all public transports
+   * 
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET)
   public List<PublicTransport> getByAll() {
     return publicTransportRepository.findAll();
   }
-
-
+  
+  /**
+   * Returns a public transport for a given id
+   * 
+   * @param id
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/{id}")
   public PublicTransport getById(@PathVariable("id") String id) {
     return publicTransportRepository.findOne(id);
   }
   
+  /**
+   * Search for a public transport based on the request parameters
+   * 
+   * @param name
+   * @param routeName
+   * @param weekdays
+   * @param departureTime
+   * @param arrivalTime
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/search")
   public List<PublicTransport> search(
 		  @RequestParam(value = "name", required = false) String name,
@@ -115,6 +135,18 @@ public class PublicTransportController {
     return null;
   }
   
+  /**
+   * Returns a list of paginated public transport
+   * 
+   * @param page
+   * @param size
+   * @param name
+   * @param routeName
+   * @param weekdays
+   * @param departureTime
+   * @param arrivalTime
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/page/{page}/{size}")
   public Page<?> getByPageSize(
 		  @PathVariable("page") String page,
@@ -155,12 +187,24 @@ public class PublicTransportController {
     return null;
   }
 
+  /**
+   * Returns a list of paginated public transport with default page size (5)
+   * 
+   * @param page
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/page/{page}")
   public Page<PublicTransport> getByPage(@PathVariable("page") int page) {
     Pageable pageable = new PageRequest(page, SIZE);
     return publicTransportRepository.findAll(pageable);
   }
 
+  /**
+   * Returns public transport by profile id
+   * 
+   * @param id
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/profile/{id}")
   public ResponseEntity<?> getPublicTransportWithProfileId(@PathVariable("id") String id) {
     try {
@@ -175,7 +219,13 @@ public class PublicTransportController {
   }
 
 
-
+  /**
+   * Returns public transport by profile id paginated with default page size(5)
+   * 
+   * @param id
+   * @param page
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/profile/{id}/page/{page}")
   public ResponseEntity<?> getPublicTransportWithProfileId(@PathVariable("id") String id,
       @PathVariable("page") int page) {
@@ -194,6 +244,14 @@ public class PublicTransportController {
     }
   }
 
+  /**
+   * Returns public transport by profile id paginated
+   * 
+   * @param id
+   * @param page
+   * @param size
+   * @return
+   */
   @RequestMapping(method = RequestMethod.GET, value = "/profile/{id}/page/{page}/size/{size}")
   public ResponseEntity<?> getPublicTransportWithProfileId(@PathVariable("id") String id,
       @PathVariable("page") int page, @PathVariable("size") int size) {
@@ -257,6 +315,14 @@ public class PublicTransportController {
     return lPublicTransport;
   }
 
+  /**
+   * Removes the specified public transport by id
+   * 
+   * @param id
+   * @param removeReason
+   * @param request
+   * @return
+   */
   @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
   public ResponseEntity<?> deleteByID(@PathVariable String id,
           @RequestParam(value = "removeReason", required = true) String removeReason,
@@ -283,6 +349,13 @@ public class PublicTransportController {
     }
   }
 
+  /**
+   * Creates a new public transport object
+   * 
+   * @param publicTransport
+   * @param request
+   * @return
+   */
   @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<?> add(@RequestBody PublicTransport publicTransport, HttpServletRequest request) {
     if (publicTransport.getId() != null) {
@@ -305,6 +378,14 @@ public class PublicTransportController {
     }
   }
 
+  /**
+   * Updates a public transport
+   * 
+   * @param publicTransport
+   * @param id
+   * @param request
+   * @return
+   */
   @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
       value = "/{id}")
   public ResponseEntity<?> update(@RequestBody PublicTransport publicTransport,

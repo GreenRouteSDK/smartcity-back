@@ -44,6 +44,12 @@ public class TransportScheduleController {
     @Autowired
     private AgencyRepository agencyRepository;
     
+    /**
+     * Returns a list of transport schedules registered
+     * 
+     * @param routeName
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<TransportSchedule> getAll(@RequestParam(value = "routeName", required = false) String routeName) {
         if (routeName == null) {
@@ -53,6 +59,17 @@ public class TransportScheduleController {
         }
     }
     
+    /**
+     * Returns a list of transport schedules paginated
+     * 
+     * @param page
+     * @param size
+     * @param routeName
+     * @param frequencyHour
+     * @param frequencyMinute
+     * @param idAgency
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/page/{page}/{size}")
     public Page<TransportSchedule> getPage(@PathVariable("page") Integer page, @PathVariable("size") Integer size,
             @RequestParam(value = "routeName", required = false) String routeName,
@@ -102,6 +119,12 @@ public class TransportScheduleController {
         }
     }
     
+    /**
+     * Returns a transport schedule for a given id
+     * 
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         TransportSchedule tmp = transportScheduleRepository.findOne(id);
@@ -114,6 +137,12 @@ public class TransportScheduleController {
         
     }
     
+    /**
+     * Returns a list of transport schedules filtered by active day
+     * 
+     * @param day
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/day/{day}")
     public ResponseEntity<?> getByDay(@PathVariable String day) {
         List<TransportSchedule> tmp = transportScheduleRepository.findByActiveDayQuery(day);
@@ -126,6 +155,12 @@ public class TransportScheduleController {
         
     }
     
+    /**
+     * Returns a list of transport schedules filtered by multiple days
+     * 
+     * @param days
+     * @return
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/days")
     public ResponseEntity<?> getByDays(@RequestParam(value = "day", required = false) List<String> days) {
         List<TransportSchedule> tmp = transportScheduleRepository.findByActiveDaysQuery(days);
@@ -138,6 +173,13 @@ public class TransportScheduleController {
         
     }
 
+    /**
+     * Creates a new transport schedule
+     * 
+     * @param transportSchedule
+     * @param request
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> add(@RequestBody TransportSchedule transportSchedule, HttpServletRequest request) {
         if (!isValid(transportSchedule)) {
@@ -155,6 +197,14 @@ public class TransportScheduleController {
         }
     }
 
+    /**
+     * Updates a given transport schedule
+     * 
+     * @param transportSchedule
+     * @param id
+     * @param request
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
     public ResponseEntity<?> update(@RequestBody TransportSchedule transportSchedule, @PathVariable("id") String id, HttpServletRequest request) {
         if (!isValid(transportSchedule)) {
@@ -182,6 +232,13 @@ public class TransportScheduleController {
         }
     }
     
+    /**
+     * Deletes a given transport schedule
+     * 
+     * @param id
+     * @param request
+     * @return
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") String id, HttpServletRequest request) {
         try {

@@ -228,19 +228,24 @@ public class KeystoneLoginServiceImpl implements KeystoneLoginService {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         HttpHeaders headers = new HttpHeaders();
-        headers.add(Constants.AUTH_TOKEN_HEADER, token);
-        headers.add(Constants.SUBJECT_TOKEN_HEADER, token);
-        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         try {
+        	//TODO subject_token es el token del usuario  logueado, auth_token es el del administrador idm
+	        String adminToken = adminUtils.getAdmintoken();
+	        headers.add(Constants.AUTH_TOKEN_HEADER, adminToken);
+	        headers.add(Constants.SUBJECT_TOKEN_HEADER, token);
+	        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
             HttpEntity<String> responseEntity = restTemplate.exchange(tokenRequestUrl, HttpMethod.DELETE, requestEntity,
                     String.class);
             return responseEntity.toString().contains(HttpStatus.NO_CONTENT.toString());
         } catch (RestClientException e) {
             return false;
-        }
+        } catch (ServiceException e) {
+			return false;
+		}
 
     }
 
+    /*converts Http Response to IdentityUser object*/
     private IdentityUser convert(HttpEntity<Response> responseEntity) {
         Response response = responseEntity.getBody();
         HttpHeaders headers = responseEntity.getHeaders();

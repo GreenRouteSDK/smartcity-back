@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Service used for recover password operations.
+ * Service used for recovery password operations.
  * 
  * @author Infotec
  */
@@ -56,7 +56,7 @@ public class RecoverPasswordController {
     }
 
   /**
-   * 
+   * Verifies if email's recovery token is correct
    * 
    * @param recoveryToken
    * @return
@@ -77,6 +77,7 @@ public class RecoverPasswordController {
   }
 
   /**
+   * Restores the given password using the verification token
    * 
    * @param recoveryToken
    * @param tokenRequest

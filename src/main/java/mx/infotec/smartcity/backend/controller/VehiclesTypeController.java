@@ -49,6 +49,11 @@ public class VehiclesTypeController {
     @Autowired
     private UserProfileRepository userProfileRepository;
 
+    /**
+     * Returns a list of registered vehicle types
+     * 
+     * @return List<VehicleType>
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<VehicleType> getAll() {
         List<VehicleType> res = vehicleTypesRepository.findAll();
@@ -58,11 +63,23 @@ public class VehiclesTypeController {
             return res;
     }
 
+    /**
+     * Returns a vehicle type for a given id
+     * 
+     * @param id
+     * @return VehicleType
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public VehicleType getById(@PathVariable Integer id) {
         return vehicleTypesRepository.findOne(id);
     }
 
+    /**
+     * Creates a new vehicle type object
+     * 
+     * @param vehicleType
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> add(@Valid @RequestBody VehicleType vehicleType) {
         if (vehicleType.getId() != null)
@@ -90,6 +107,13 @@ public class VehiclesTypeController {
         }
     }
 
+    /**
+     * Updates a vehicle type
+     * 
+     * @param vehiclesType
+     * @param id
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, value = "/{id}")
     public ResponseEntity<?> update(@RequestBody VehicleType vehiclesType, @PathVariable("id") Integer id) {
         try {
@@ -111,6 +135,14 @@ public class VehiclesTypeController {
         }
     }
 
+    /**
+     * Deletes a vehicle type
+     * 
+     * @param id
+     * @param type
+     * @return
+     * @throws ServiceException
+     */
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}/type/{type}")
     public ResponseEntity<?> deleteByID(@PathVariable Integer id, @PathVariable("type") String type)
             throws ServiceException {
