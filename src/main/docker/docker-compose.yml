@@ -1,0 +1,52 @@
+version: '3'
+services:
+
+    reverseproxy:
+        image: samjm/reverseproxy:1.0
+        # build: ./reverseproxy
+        # container_name: reverseproxy
+        ports:
+            #- 80:80
+            - 80:80
+        restart: always
+
+    smart-sdk-back:
+        image: samjm/smart-sdk-back:1.0
+        depends_on:
+            - reverseproxy
+            - smart-sdk-keyrock
+            - smart-sdk-mongodb
+        environment:
+            - SPRING_PROFILES_ACTIVE=production
+            - SPRING_DATA_MONGODB_URI=mongodb://smart-sdk-mongodb:27017
+            - IDM_SERVERS_KEYSTONE=http://smart-sdk-keyrock:5000
+            - IDM_SERVERS_ORION=http://smart-sdk-orion:1026
+
+    smart-sdk-front:
+        image: samjm/smart-sdk-front:1.0
+        depends_on:
+          - reverseproxy
+
+    smart-sdk-mongodb:
+        image: mongo:3.2.6
+
+    mongo-import:
+        image: samjm/mongo-seeder:latest #mongo:3.2.6
+        links:
+          - smart-sdk-mongodb
+        depends_on:
+          - smart-sdk-mongodb
+    #     volumes:
+    #       - ./mongo-import:/sample-data/mongo-import
+    #     command:
+    #       /mongo-import/sample-data/import.sh
+
+    smart-sdk-orion:
+        image: fiware/orion
+        command: -dbhost smart-sdk-mongodb
+
+    smart-sdk-keyrock:
+        image: rodrigonievez/infotec-idm-image
+
+volumes:
+  mongo-import:
