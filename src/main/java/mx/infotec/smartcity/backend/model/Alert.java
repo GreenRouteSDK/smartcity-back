@@ -36,6 +36,7 @@ public class Alert implements Serializable {
     private boolean found;
     private HashMap address;
     private String dataSource;
+    private String severity;
         
     
     public Alert (){
@@ -61,7 +62,7 @@ public class Alert implements Serializable {
                 this.location = OrionMapper.extractCoordinateProperty(data);
                 this.address = OrionMapper.extractMapProperty(data, "address");
                 this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress") + ", " + OrionMapper.extractFromMapProperty(address, "addressLocality");
-                this.dataSource = OrionMapper.extractProperty(data, "dataSource");
+                this.dataSource = OrionMapper.extractProperty(data, "source");
                                 
                 if(elemento.equals("temperature")){
                     if(Float.parseFloat(description)>=14&&Float.parseFloat(description)<=26){
@@ -97,6 +98,7 @@ public class Alert implements Serializable {
             this.address = OrionMapper.extractMapProperty(data, "address");
             this.locationDescription = OrionMapper.extractFromMapProperty(address, "streetAddress") + ", " + OrionMapper.extractFromMapProperty(address, "addressLocality");
             this.dataSource = OrionMapper.extractProperty(data, "alertSource");
+            this.severity = OrionMapper.extractProperty(data, "severity");
         }
     }
     
@@ -195,6 +197,14 @@ public class Alert implements Serializable {
     public void setLocation(ArrayList location){
         this.location = location;
     }
+    
+    public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
     
     /* Función que convierte a mayúsculas la primera letra de un String */
     public final String firstLetterCaps ( String data ) {
