@@ -208,7 +208,7 @@ CREATE TABLE IF NOT EXISTS "doc"."etpollutant" (
   PRIMARY KEY ("idpollutant")
 )
 ```
-*Insert Data*
+*Insert Data:*
 
 ```
 insert into etstation (entity_id, name, acron) values('CDMX-AmbientObserved-484150020109','Acolman','ACO');
@@ -287,7 +287,7 @@ It returns a key that you'll need to send as an "Authorization" header in the fo
 }
 ```
 
-2. Create a crateDB datasource by indicating the crateDB URL within the json payload ***"url": "http://localhost:4200"***.
+2. Create a crateDB datasource by indicating the crateDB URL within the json payload ***url: http://localhost:4200***.
 
 ```
 POST http://localhost:3000/api/datasources
@@ -384,7 +384,7 @@ eval $(docker-machine env -u)
 
 # Further information
 
-## Alternatively, you can use the compose ***docker-compose-reverse.yml*** file using a reverse-proxy and ssl for a more secure application.
+Alternatively, you can use the compose ***docker-compose-reverse.yml*** file using a reverse-proxy and ssl for a more secure application.
 
 ### Create a docker image for reverseproxy found at smartcity-back/src/main/docker/reverseproxy
 
