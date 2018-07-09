@@ -105,7 +105,7 @@ docker push samjm/mongo-seeder:latest
 ```
 
 
-Alternatively, you can use a compose file using a reverse-proxy and ssl for
+Alternatively, you can use a compose *docker-compose-reverse.yml* file using a reverse-proxy and ssl for
 a secure application, as seen in the docker-compose-proxy.yml file.
 
 ## Create docker image for reverseproxy found at smartcity-back/src/main/docker/reverseproxy
@@ -142,42 +142,44 @@ location path in nginx.conf (configured domain at hosts)
 Pre-requisites:
 
 Install virtualbox
+```
 sudo apt-get install virtualbox
+```
 
-
+```
 docker-machine create --driver virtualbox myvm1
 docker-machine create --driver virtualbox myvm2
 docker-machine ls  #To see the virtual ip adress used in next step
-
+```
 2. Set main node for swarm
-
+```
 docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.100"
-
+```
 Returns token to add workers to the swarm
 
  3. Add worker node to the swarm
-
+```
 docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-4kwbrascwqpye99rcs252okjgbj67eg5hpachf9dppkh6x5ff7-3dxfvrmtzd71yyezx2e0l1v7z 192.168.99.100:2377"
 docker-machine ssh myvm1 "docker node ls"
-
+```
 4. Use environment from main docker node
-
+```
 docker-machine env myvm1
 eval $(docker-machine env myvm1)
-
+```
 5. Deploy application using the docker-compose file
-
+```
 docker stack deploy -c docker-compose.yml greenroute
 docker stack ps greenroute
-
+```
 6. Remove application
-
+```
 docker stack rm greenroute
-
+```
 7. Close docker main node environment
-
+```
 eval $(docker-machine env -u)
-
+```
 
 ## Configure Grafana, CrateDB, QuantumLeap with data from Mexico City's AirQualityObserved.
 
@@ -193,7 +195,7 @@ Verify that QuantumLeap is working correclty by querying:
 0.0.0.0:8668/v2/version
 
 ### Create a susbscription in OCB to AirQualityObserved where the notifications fall into QuantumLeap
-
+```
 curl -v localhost:1026/v2/subscriptions -s -S -H 'Content-Type: application/json' --header "Fiware-Service:airquality" --header "Fiware-ServicePath:/" -d @- <<EOF
  {
   "description": "Quantum Temp Name",
@@ -245,7 +247,7 @@ curl -v localhost:1026/v2/subscriptions -s -S -H 'Content-Type: application/json
   "throttling": 1
 }
 EOF
-
+```
 
 
 
@@ -269,7 +271,7 @@ crash
 
 
 ###2. Crear tablas de estaciones y contaminantes e insertar datos.
-
+```
 CREATE TABLE IF NOT EXISTS "doc"."etstation" (
   "entity_id" STRING,
   "name" STRING,
@@ -283,10 +285,10 @@ CREATE TABLE IF NOT EXISTS "doc"."etpollutant" (
   "namefront" STRING,
   PRIMARY KEY ("idpollutant")
 )
-
+```
 
 *TODO Fix import with json file*
-
+```
 insert into etstation (entity_id, name, acron) values('CDMX-AmbientObserved-484150020109','Acolman','ACO');
 insert into etstation (entity_id, name, acron) values('CDMX-AmbientObserved-484090120609','Ajusco Medio','AJM');
 insert into etstation (entity_id, name, acron) values('CDMX-AmbientObserved-484090120400','Ajusco','AJU');
@@ -342,7 +344,7 @@ insert into etpollutant (idpollutant, name, namefront) values(4,'no2','Nitrogen 
 insert into etpollutant (idpollutant, name, namefront) values(5,'o3','Ozone (O3)');
 insert into etpollutant (idpollutant, name, namefront) values(6,'so2','Sulfur Dioxide (SO2)');
 insert into etpollutant (idpollutant, name, namefront) values(7,'pm10','Particulate Matter (PM10)');
-
+```
 
 
 
@@ -356,24 +358,24 @@ and datasources.
 
 POST http://admin:admin@0.0.0.0:3000/api/auth/keys
 Content-Type: application/json
-
+```
 {"name":"apikeycurl", "role": "Admin"}
-
+```
 
 It returns a key, which you'll need to send as an "Authorization" header in the
 following steps.
-
+```
 {
 	"name": "apikeycurl",
 	"key": "eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ=="
 }
-
+```
 2. Create a CrateDB datasource where you need to incidate the cratedb url within the json payload
 
 POST http://0.0.0.0.3000/api/datasources
 Content-Type: "application/json"
 Authorization: "Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ=="
-
+```
 {
   "id": null,
   "orgId": 1,
@@ -396,9 +398,10 @@ Authorization: "Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuI
   },
   "readOnly": false
 }
-
+```
 
 3. Import dashboard rawdash.json
 
-
+```
 curl -X POST  -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ==" -d @rawdash.json http://0.0.0.0:3000/api/dashboards/db
+```

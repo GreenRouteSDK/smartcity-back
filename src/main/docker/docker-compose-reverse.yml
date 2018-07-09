@@ -1,9 +1,19 @@
 version: '3'
 services:
 
+    reverseproxy:
+        image: samjm/reverseproxy
+        # build: ./reverseproxy
+        # container_name: reverseproxy
+        ports:
+            #- 80:80
+            - 80:80
+        #restart: always
+
     smart-sdk-back:
-        image: samjm/smart-sdk-back:1.0
+        image: samjm/smart-sdk-back:latest
         depends_on:
+            - reverseproxy
             - smart-sdk-keyrock
             - smart-sdk-mongodb
         environment:
@@ -11,13 +21,11 @@ services:
             - SPRING_DATA_MONGODB_URI=mongodb://smart-sdk-mongodb:27017
             - IDM_SERVERS_KEYSTONE=http://smart-sdk-keyrock:5000
             - IDM_SERVERS_ORION=http://smart-sdk-orion:1026
-        ports:
-            - "8080:8080"
 
     smart-sdk-front:
         image: samjm/smart-sdk-front:latest
-        ports:
-          - "80:80"
+        depends_on:
+          - reverseproxy
 
     smart-sdk-mongodb:
         image: mongo:3.2.6
@@ -32,15 +40,21 @@ services:
             delay: 1m30s
 
     mongo-seeder:
-        image: samjm/mongo-seed:latest
+        image: samjm/mongo-seed:latest #mongo:3.2.6
+        # links:
+        #   - smart-sdk-mongodb
         depends_on:
           - smart-sdk-mongodb
         deploy:
           restart_policy:
             condition: on-failure
+        # volumes:
+    #       - ./mongo-import:/sample-data/mongo-import
+    #     command:
+    #       /mongo-import/sample-data/import.sh
 
     smart-sdk-orion:
-        image: fiware/orion:1.14.0
+        image: fiware/orion
         ports:
           - "1026:1026"
         command: -dbhost smart-sdk-mongodb
@@ -57,10 +71,10 @@ services:
 
     quantumleap:
       image: smartsdk/quantumleap
-      ports:
-        - "8668:8668"
+      #ports:
+      #  - "8668:8668"
       depends_on:
-        - smart-sdk-mongodb
+        - mongo
         - smart-sdk-orion
         - crate
       environment:
@@ -68,11 +82,11 @@ services:
 
     crate:
       image: crate:1.0.5
-      ports:
+      #ports:
         # Admin UI
-        - "4200:4200"
+        #- "4200:4200"
         # Transport protocol
-        - "4300:4300"
+        #- "4300:4300"
       command: -Ccluster.name=democluster -Chttp.cors.enabled=true -Chttp.cors.allow-origin="*"
 
     grafana:
@@ -80,7 +94,7 @@ services:
       ports:
         - "3000:3000"
       environment:
-        - GF_INSTALL_PLUGINS=crate-datasource,grafana-clock-panel
+        - GF_INSTALL_PLUGINS=crate-datasource,grafana-clock-panel,grafana-worldmap-panel
       depends_on:
         - crate
 
