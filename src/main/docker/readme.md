@@ -1,30 +1,29 @@
-# Docker deployment guide (with configuration)
+# Docker Deployment Guide
 
 The docker deployment uses the following services:
 
-- Back-end:                 smart-sdk-back:8080
-- FrontEnd:                 smart-sdk-front:4200
-- MongoDB:                  mongodb://smart-sdk-mongodb:27017
-- Keyrock IdentityManager:  http://smart-sdk-keyrock:5000
+- Back-end:                 greenroute-back:8080
+- FrontEnd:                 greenroute-front:80
+- MongoDB:                  mongodb://greenroute-mongodb:27017
+- Keyrock IdentityManager:  greenroute-keyrock:5000
 
 Additional Services:
-- OrionContextBroker:       http://smart-sdk-orion:1026
-- QuantumLeap
-- Grafana
-- CrateDB
+- OrionContextBroker:       smart-sdk-orion:1026
+- QuantumLeap		    quantumleap:8668
+- Grafana		    grafana:3000
+- CrateDB		    cratedb:4200
 
-Using the docker-compose.yml file you can be able to test and deploy the application
+Using the ***docker-compose.yml*** file you can be able to test and deploy the application
 using the previosuly made docker images from each component.
 
 However, in order to adapt the application to your needs (the ideal way), it is
 necessary to perform a few configurations on the smart-sdk-back and smart-sdk-front.
 
+## Configure greenroute-back to deploy and generate docker image.
 
-## Configure backend to deploy and generate docker image
+1. Modify configuration in ***application.yml***
 
-1. Modify configuration in *application.yml*
-
-**Mail server config, It uses gmail smtp server fo testing purposes:**
+**Mail server configuration, It uses gmail smtp server fo testing purposes (Need to allow third-party applications use google acccount):**
 
 ```
   spring.mail.host: smtp.gmail.com
@@ -40,7 +39,7 @@ front.url: localhost/#
 front.image-url: localhost
 ```
 
-2. Deploy and create .war at root of smartcity-back/
+2. Deploy and create **.war** at root of smartcity-back/
 
 ```
 sudo mvn -P production clean package docker:build
@@ -50,13 +49,13 @@ sudo mvn -P production clean package docker:build
 
 ```
 docker login
-docker tag smart-sdk-back samjm/smart-sdk-back:latest
-docker push samjm/smart-sdk-back:1.0
+docker tag greenroute-back your-docker-account/greenroute-back:0.1
+docker push your-docker-account/greenroute-back:0.1
 ```
 
-## Configure and compile Front-end in smartcity-front/
+## Configure, compile and create docker image for greenroute-front.
 
-1. Modify */src/environments/environment.prod.ts* to target backend URL along with
+1. Modify ***/src/environments/environment.prod.ts*** to target backend URL, alerts application, grafana dashboard and routing map.
 
 ```
 export const environment = {
@@ -68,137 +67,60 @@ export const environment = {
 };
 ```
 
-2. Build angular application in smartcity-front/ root
+2. Build angular application in ***greenroute-front/*** root
 
 ```
 ng build --env=prod
 ```
 
-3. Build docker image. Dockerfile uses nginx-alpine and copy compiled /dist files.
+3. Build docker image. Dockerfile uses ***nginx-alpine*** and copy compiled ***/dist*** files.
 
 ```
-sudo docker build -t smart-sdk-front .
+sudo docker build -t greenroute-front .
 ```
 
 4. Tag and push image *(optional)*
 
 ```
-sudo docker tag smart-sdk-front samjm/smart-sdk-front:latest
+sudo docker tag greenroute-front your-docker-account/greenroute-front:latest
 
-sudo docker push samjm/smart-sdk-front:latest
+sudo docker push your-docker-account/greenroute-front:latest
 ```
 
 
-## Mongo seeder. To load initial data to mongodb
+## Mongo seeder. To load initial data to mongoDB.
 
-1. Verify the *HOST* on *sample-data/import.sh* corresponds to the container name in docker-compose.yml file.
+1. Verify the ***HOST*** on *smartcity-back/src/main/docker/mongo-import/sample-data/import.sh* corresponds to the container name in ***docker-compose.yml*** file.
 
-HOST=smart-sdk-mongodb
+HOST=greenroute-mongodb
 PORT=27017
 
-2. Create docker image from smartcity-back/src/main/docker/mongo-import
+2. Create docker image from *greenroute-back/src/main/docker/mongo-import* *(optional)*
 
 ```
 docker build -t mongo-seeder .
-docker tag mongo-seeder samjm/mongo-seeder:latest
-docker push samjm/mongo-seeder:latest
-```
-
-
-Alternatively, you can use a compose *docker-compose-reverse.yml* file using a reverse-proxy and ssl for
-a secure application, as seen in the docker-compose-proxy.yml file.
-
-## Create docker image for reverseproxy found at smartcity-back/src/main/docker/reverseproxy
-
-1. Change *server_name* in *nginx.conf* for domain name to use.
-
-**TODO Further changes to include ssl**
-
-2. Build image
-
-  ```
-  sudo docker build -t reverseproxy .
-  ```
-
-3. Tag and push to your repo *(optional)*
-
-  ```
-  sudo docker tag reverseproxy samjm/reverseproxy:1.0
-  sudo docker push samjm/reverseproxy:1.0
-  ```
-
-Notice that the references you set here, needs to be updated in the previous urls
-
-location path in nginx.conf (configured domain at hosts)
-
-////////////////////////
-
-#Docker guide of application ready-to-use:
-
-#Testing step by step by using docker-machine VMs.
-
-1. Create two VM
-
-Pre-requisites:
-
-Install virtualbox
-```
-sudo apt-get install virtualbox
-```
-
-```
-docker-machine create --driver virtualbox myvm1
-docker-machine create --driver virtualbox myvm2
-docker-machine ls  #To see the virtual ip adress used in next step
-```
-2. Set main node for swarm
-```
-docker-machine ssh myvm1 "docker swarm init --advertise-addr 192.168.99.100"
-```
-Returns token to add workers to the swarm
-
- 3. Add worker node to the swarm
-```
-docker-machine ssh myvm2 "docker swarm join --token SWMTKN-1-4kwbrascwqpye99rcs252okjgbj67eg5hpachf9dppkh6x5ff7-3dxfvrmtzd71yyezx2e0l1v7z 192.168.99.100:2377"
-docker-machine ssh myvm1 "docker node ls"
-```
-4. Use environment from main docker node
-```
-docker-machine env myvm1
-eval $(docker-machine env myvm1)
-```
-5. Deploy application using the docker-compose file
-```
-docker stack deploy -c docker-compose.yml greenroute
-docker stack ps greenroute
-```
-6. Remove application
-```
-docker stack rm greenroute
-```
-7. Close docker main node environment
-```
-eval $(docker-machine env -u)
+docker tag mongo-seeder your-docker-account/mongo-seeder:latest
+docker push your-docker-account/mongo-seeder:latest
 ```
 
 ## Configure Grafana, CrateDB, QuantumLeap with data from Mexico City's AirQualityObserved.
 
-Once the services are running, you can access Grafana on the url 0.0.0.0:3000
-and CrateDB on 0.0.0.0:4200 and QuantumLeap in 0.0.0.0:8668
+Once the services are running, you can access Grafana on the **0.0.0.0:3000** CrateDB on **0.0.0.0:4200** and QuantumLeap in **0.0.0.0:8668**.
 
-
-
-###QuantumLeap
+### QuantumLeap
 
 Verify that QuantumLeap is working correclty by querying:
 
+```
 0.0.0.0:8668/v2/version
+```
 
-### Create a susbscription in OCB to AirQualityObserved where the notifications fall into QuantumLeap
+1. Create a subscription in OCB for AirQualityObserved where the notifications fall into QuantumLeap's endpoint ***http://0.0.0.0:8668/v2/notify***.
+
 ```
 curl -v localhost:1026/v2/subscriptions -s -S -H 'Content-Type: application/json' --header "Fiware-Service:airquality" --header "Fiware-ServicePath:/" -d @- <<EOF
  {
-  "description": "Quantum Temp Name",
+  "description": "QuantumLeap AirQaulityCDMX",
   "subject": {
     "entities": [
       {
@@ -249,28 +171,28 @@ curl -v localhost:1026/v2/subscriptions -s -S -H 'Content-Type: application/json
 EOF
 ```
 
+### CrateDB
 
+In order to provide a better interface in the Grafana dashboard, we need to create two additional tables with the information of airquality stations and pollutants.
 
-##CrateDB
+We can access cratedb via command-line or through web browser in the **localhost:4200**
 
-###1. Instalar Crate c/docker
+1. To access via console, connect to the container:
 
-We need to create two additional tables in order to provide a better interface in
-the Grafana dashboard.
-
-
-We can access cratedb via command-line or through web browser in the 0.0.0.0:4200
-
-1. To access through console, connect to the container:
-
+```
 docker exec -ti cratedb /bin/sh
+```
 
-2. Call the bash console, called crash:
+2. Call the cratedb bash console (named crash) from inside the container:
+```
 crash
+```
 
+3. Create the stations an pollutants tables and insert data.
 
+***TODO: FIX IMPORT WITH JSON FILE***
 
-###2. Crear tablas de estaciones y contaminantes e insertar datos.
+*Create Tables:*
 ```
 CREATE TABLE IF NOT EXISTS "doc"."etstation" (
   "entity_id" STRING,
@@ -286,8 +208,8 @@ CREATE TABLE IF NOT EXISTS "doc"."etpollutant" (
   PRIMARY KEY ("idpollutant")
 )
 ```
+*Insert Data*
 
-*TODO Fix import with json file*
 ```
 insert into etstation (entity_id, name, acron) values('CDMX-AmbientObserved-484150020109','Acolman','ACO');
 insert into etstation (entity_id, name, acron) values('CDMX-AmbientObserved-484090120609','Ajusco Medio','AJM');
@@ -346,36 +268,32 @@ insert into etpollutant (idpollutant, name, namefront) values(6,'so2','Sulfur Di
 insert into etpollutant (idpollutant, name, namefront) values(7,'pm10','Particulate Matter (PM10)');
 ```
 
-
-
 ### Grafana
 
-
-Grafana comes with an API which lets you manage many options including dashboards
-and datasources.
+Grafana comes with an API which lets you manage many options including the configuration of dashboards and datasources.
 
 1. As a first step, you need to obtain a key to use the API:
 
-POST http://admin:admin@0.0.0.0:3000/api/auth/keys
-Content-Type: application/json
 ```
+POST http://admin:admin@localhost:3000/api/auth/keys
+Content-Type: application/json
 {"name":"apikeycurl", "role": "Admin"}
 ```
-
-It returns a key, which you'll need to send as an "Authorization" header in the
-following steps.
+It returns a key that you'll need to send as an "Authorization" header in the following steps.
 ```
 {
 	"name": "apikeycurl",
 	"key": "eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ=="
 }
 ```
-2. Create a CrateDB datasource where you need to incidate the cratedb url within the json payload
 
-POST http://0.0.0.0.3000/api/datasources
+2. Create a crateDB datasource by indicating the crateDB URL within the json payload ***"url": "http://localhost:4200"***.
+
+```
+POST http://localhost:3000/api/datasources
 Content-Type: "application/json"
 Authorization: "Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ=="
-```
+
 {
   "id": null,
   "orgId": 1,
@@ -383,7 +301,7 @@ Authorization: "Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuI
   "type": "crate-datasource",
   "typeLogoUrl": "public/plugins/crate-datasource/img/crate_logo.png",
   "access": "proxy",
-  "url": "http://0.0.0.0:4200",
+  "url": "http://localhost:4200",
   "password": "",
   "user": "",
   "database": "",
@@ -400,8 +318,84 @@ Authorization: "Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuI
 }
 ```
 
-3. Import dashboard rawdash.json
+3. Import the Grafana dashboard described in the ***rawdash.json*** file.
 
 ```
-curl -X POST  -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ==" -d @rawdash.json http://0.0.0.0:3000/api/dashboards/db
+curl -X POST  -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer eyJrIjoiUDNGQlM5YldXbUdVU2JreDJiVkZDYW81aWZCTlZFSlkiLCJuIjoiYXBpa2V5Y3VybCIsImlkIjoxfQ==" -d @rawdash.json http://localhost:3000/api/dashboards/db
 ```
+
+
+# Install application with swarm (step by step using docker-machine VMs)
+
+**Pre-requisites:**
+
+- Install virtualbox
+```
+sudo apt-get install virtualbox
+```
+- Install docker-machine
+
+https://docs.docker.com/machine/install-machine/#install-machine-directly
+
+1. Create two VMs
+
+```
+docker-machine create --driver virtualbox vm1
+docker-machine create --driver virtualbox vm2
+```
+
+2. Set main node for swarm.
+
+```
+docker-machine ls  #To see the virtual ip adress of the main node
+docker-machine ssh vm1 "docker swarm init --advertise-addr 192.168.99.100"
+```
+
+Returns token to add workers to the swarm
+
+3. Add worker node to the swarm
+```
+docker-machine ssh vm2 "docker swarm join --token SWMTKN-1-4kwbrascwqpye99rcs252okjgbj67eg5hpachf9dppkh6x5ff7-3dxfvrmtzd71yyezx2e0l1v7z 192.168.99.100:2377"
+
+docker-machine ssh vm1 "docker node ls"
+```
+4. Use environment from main docker node
+
+```
+docker-machine env myvm1
+eval $(docker-machine env myvm1)
+```
+
+5. Deploy application using the docker-compose file
+```
+docker stack deploy -c docker-compose.yml greenroute
+docker stack ps greenroute
+```
+
+6. Remove application
+```
+docker stack rm greenroute
+```
+
+7. Close docker main node environment
+```
+eval $(docker-machine env -u)
+```
+
+# Further information
+
+## Alternatively, you can use the compose ***docker-compose-reverse.yml*** file using a reverse-proxy and ssl for a more secure application.
+
+### Create a docker image for reverseproxy found at smartcity-back/src/main/docker/reverseproxy
+
+1. Change ***server_name*** in ***nginx.conf*** for domain name to use.
+
+**TODO Further changes to include ssl**
+
+2. Build image
+
+  ```
+  sudo docker build -t reverseproxy .
+  ```
+
+***Notice that the docker service references in the src/main/docker/reverseproxy/nginx.conf file corresponds to the previous deployed services***.
