@@ -22,5 +22,5 @@ also you need to start your mongodb
 mongod --dbpath x
 ```
 x path to database
-
+.
 
